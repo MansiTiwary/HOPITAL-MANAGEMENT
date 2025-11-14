@@ -1,0 +1,106 @@
+{% comment %} <!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}Doc{% endblock %}</title>
+
+    <!-- Global styles -->
+    <style>
+        .site-footer p {
+            margin: 0;
+        }
+    </style>
+
+    <!-- Child templates can insert extra CSS/JS -->
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+
+    <nav class="nav-bar">
+        <div class="logo">HealthFusion-24X7</div>
+        <div class="nav-links">
+            <a href="{{ url_for('registration') }}">Registration</a>
+            <a href="{{ url_for('login') }}">Login</a>
+        </div>
+    </nav>
+
+    <!-- Main page content -->
+    {% block content %}
+    {% endblock %}
+
+    <footer class="site-footer">
+        <p>
+            &copy; 2024 HealthFusion. All rights reserved. |
+            Build with Care and Love – @MansiTiwary
+        </p>
+    </footer>
+
+    <!-- LiveReload will inject its script here -->
+</body>
+</html> {% endcomment %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}HealthFusion{% endblock %}</title>
+
+  <style>
+    /* Minimal global style */
+    body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; margin:0; padding:0; }
+    .nav-bar { display:flex; align-items:center; justify-content:space-between; padding:12px 24px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+    .logo { font-weight:700; color:#667eea; }
+    .nav-links a { margin-left:12px; color:#333; text-decoration:none; }
+    .container { padding:24px; max-width:1100px; margin:24px auto; }
+    footer.site-footer { padding: 14px 24px; text-align:center; background:#f8f9fa; margin-top:36px; }
+  </style>
+
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <nav class="nav-bar">
+    <div class="logo">HealthFusion-24X7</div>
+    <div class="nav-links">
+      <a href="{{ url_for('index') }}">Home</a>
+      {% if current_user.is_authenticated %}
+        {% if current_user.role == 'admin' %}
+          <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        {% elif current_user.role == 'doctor' %}
+          <a href="{{ url_for('doctor_dashboard') }}">Doctor</a>
+        {% else %}
+          <a href="{{ url_for('patient_dashboard') }}">Patient</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('register') }}">Register</a>
+        <a href="{{ url_for('login') }}">Login</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div>
+          {% for category, msg in messages %}
+            <div style="padding:8px;margin-bottom:8px;border-radius:6px;background:#f1f5ff;">
+              <strong>{{ category.title() }}</strong> — {{ msg }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2025 HealthFusion. Build with Care and Love – @MansiTiwary</p>
+  </footer>
+</body>
+</html>
